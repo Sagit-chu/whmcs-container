@@ -18,7 +18,7 @@ services:
       retries: 3
 
   php:
-    image: whmcs-php8.1:v0.1
+    image: ghcr.io/sagit-chu/whmcs-container:latest
     restart: always
       #    ports:
       #- "127.0.0.1:9000:9000"
