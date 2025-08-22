@@ -1,0 +1,70 @@
+services:
+  nginx:
+    image: nginx
+    ports:
+      - "127.0.0.1:8081:80"
+    restart: always
+    volumes:
+      - ./www:/var/www/html
+      - ./nginx:/etc/nginx/conf.d
+    depends_on:
+      - php
+    networks:
+      - whmcs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  php:
+    image: whmcs-php8.1:v0.1
+    restart: always
+      #    ports:
+      #- "127.0.0.1:9000:9000"
+    volumes:
+      - ./www:/var/www/html
+    environment:
+      - TZ=Asia/Shanghai
+    depends_on:
+      - mysql
+    networks:
+      - whmcs
+
+  mysql:
+    image: mariadb:10
+    restart: always
+      #ports:
+      #- "127.0.0.1:3306:3306"
+    environment:
+      - MARIADB_ROOT_PASSWORD=changeme
+      - MARIADB_DATABASE=whmcs
+      - MARIADB_USER=whmcs
+      - MARIADB_PASSWORD=changeme
+      - TZ=Asia/Shanghai
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/logs:/var/log/mysql
+      - ./mysql/conf:/etc/mysql/conf.d
+    networks:
+      - whmcs
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # bepusdt: 
+  #   image: v03413/bepusdt:latest
+  #   restart: unless-stopped 
+  #   ports: 
+  #     - "127.0.0.1:8082:8082" 
+  #   volumes: 
+  #     - ./bepusdt/conf.toml:/usr/local/bepusdt/conf.toml
+  #     - ./bepusdt/data:/var/lib/bepusdt
+  #   networks:
+  #     - whmcs
+
+networks:
+  whmcs:
+
