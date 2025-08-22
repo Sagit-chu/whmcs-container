@@ -39,3 +39,4 @@ jobs:
             --tag ghcr.io/${{ env.REPO_LC }}:${{ env.RELEASE_VERSION }} \
             --tag ghcr.io/${{ env.REPO_LC }}:latest \
             --push \
+            .
